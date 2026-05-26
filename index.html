@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GESTIÓN ALMACÉN BODEGA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ========================= -->
+  <!-- BARRA SUPERIOR -->
+  <!-- ========================= -->
+
+  <header id="topbar">
+
+    <button id="btnDelete">
+      🗑 Borrar Selección
+    </button>
+
+    <button id="btnClear">
+      🧹 Vaciar Almacén
+    </button>
+
+    <button id="btnPdf">
+      📄 Exportar PDF
+    </button>
+
+    <button id="btnTotals">
+      📊 TOTALES
+    </button>
+
+    <button id="btnBack" class="hidden">
+      ⬅ Volver al Plano
+    </button>
+
+  </header>
+
+  <!-- ========================= -->
+  <!-- VISTA PRINCIPAL -->
+  <!-- ========================= -->
+
+  <main id="mainView">
+
+    <!-- PANEL -->
+    <aside id="panel">
+
+      <h2>PALETA DE STOCK</h2>
+
+      <div id="palette"></div>
+
+      <hr>
+
+      <h2>Estructuras</h2>
+
+      <!-- ESTRUCTURA NEGRA -->
+
+      <div class="structureRow">
+
+        <div
+          class="structureSquare borderBlack"
+          draggable="true"
+          data-structure="black"
+        ></div>
+
+        <input
+          type="text"
+          class="structureInput"
+          placeholder="Nombre"
+          data-structure-input="black"
+        >
+
+      </div>
+
+      <!-- ESTRUCTURA ROJA -->
+
+      <div class="structureRow">
+
+        <div
+          class="structureSquare borderRed"
+          draggable="true"
+          data-structure="red"
+        ></div>
+
+        <input
+          type="text"
+          class="structureInput"
+          placeholder="Nombre"
+          data-structure-input="red"
+        >
+
+      </div>
+
+    </aside>
+
+    <!-- GRID -->
+
+    <section id="gridWrapper">
+      <div id="grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ========================= -->
+  <!-- VISTA TOTALES -->
+  <!-- ========================= -->
+
+  <section id="totalsView" class="hidden">
+
+    <div id="totalsContainer">
+
+      <table id="totalsTable">
+
+        <thead>
+
+          <tr>
+            <th>Marca</th>
+            <th>Añada</th>
+            <th>Capacidad (Litros)</th>
+            <th>Total Unidades</th>
+            <th>Total Palets</th>
+            <th>Total Litros</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="totalsBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>

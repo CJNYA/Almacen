@@ -171,6 +171,7 @@ button{
   font-size:10px;
   user-select:none;
   text-align:center;
+  
 }
 
 .selected{
@@ -180,7 +181,16 @@ button{
 /* STRUCTURE CELLS */
 
 .structureBlack{
-  border:2px solid black;
+  border-top:2px solid black;
+  border-bottom:2px solid black;
+}
+
+.structureBlack.first{
+  border-left:2px solid black;
+}
+
+.structureBlack.last{
+  border-right:2px solid black;
 }
 
 .structureRed{

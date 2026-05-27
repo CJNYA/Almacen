@@ -13,6 +13,11 @@ let firstCell = null;
 
 let draggedItem = null;
 
+let structureNames = {
+  black:"",
+  red:""
+};
+
 /* ========================= */
 /* ELEMENTS */
 /* ========================= */
@@ -194,32 +199,47 @@ function createGrid(){
 
       /* DOUBLE CLICK */
 
-      cell.addEventListener("dblclick", ()=>{
+     cell.addEventListener("dblclick", ()=>{
 
-        const key = `${r}-${c}`;
+  const key = `${r}-${c}`;
 
-        const data = gridData[key];
+  const data = gridData[key];
 
-        if(!data) return;
+  if(!data) return;
 
-        if(data.type !== "stock") return;
+  if(data.type !== "stock") return;
 
-        const value = prompt(
-          "Editar unidades",
-          data.overrideUnits || data.unidades
-        );
+  /* UNIDADES */
 
-        if(value !== null){
+  const units = prompt(
+    "Editar unidades",
+    data.overrideUnits || data.unidades
+  );
 
-          data.overrideUnits = Number(value);
+  if(units === null) return;
 
-          renderGrid();
-          updateTotals();
-          saveData();
+  /* PALETS */
 
-        }
+  const palets = prompt(
+    "Editar palets",
+    data.overridePalets || data.palets || 0
+  );
 
-      });
+  if(palets === null) return;
+
+  data.overrideUnits =
+    Number(units);
+
+  data.overridePalets =
+    Number(palets);
+
+  renderGrid();
+
+  updateTotals();
+
+  saveData();
+
+});
 
       /* DRAG */
 
@@ -323,17 +343,57 @@ function applyDragged(r,c){
 
     if(draggedItem.type === "structure"){
 
-      gridData[key] = {
-        type:"structure",
-        border:draggedItem.border,
-        text:draggedItem.text,
-        short:
-          draggedItem.text
-          .charAt(0)
-          .toUpperCase()
-      };
+  const isBlack =
+    draggedItem.border === "black";
 
-    }
+  const minR =
+    Math.min(...targets.map(t=>t.r));
+
+  const maxR =
+    Math.max(...targets.map(t=>t.r));
+
+  const minC =
+    Math.min(...targets.map(t=>t.c));
+
+  const maxC =
+    Math.max(...targets.map(t=>t.c));
+
+  const centerCell =
+    pos.r === minR &&
+    pos.c === minC;
+
+  gridData[key] = {
+
+    type:"structure",
+
+    border:draggedItem.border,
+
+    text:draggedItem.text,
+
+    short:
+      isBlack
+        ? (centerCell
+            ? draggedItem.text
+            : "")
+        : draggedItem.text,
+
+    merged:isBlack,
+
+    top:
+      pos.r === minR,
+
+    bottom:
+      pos.r === maxR,
+
+    left:
+      pos.c === minC,
+
+    right:
+      pos.c === maxC
+
+  };
+
+}
 
     /* STOCK */
 
@@ -361,6 +421,27 @@ function applyDragged(r,c){
   saveData();
 
 }
+
+/* ========================= */
+/* STRUCTURE INPUTS */
+/* ========================= */
+
+document.querySelectorAll(".structureInput")
+.forEach(input=>{
+
+  input.addEventListener("input", ()=>{
+
+    const type =
+      input.dataset.structureInput;
+
+    structureNames[type] =
+      input.value;
+
+    saveData();
+
+  });
+
+});
 
 /* ========================= */
 /* STRUCTURES */
@@ -410,6 +491,11 @@ function renderGrid(){
 
       cell.style.background = "white";
 
+      cell.style.borderTop = "";
+cell.style.borderBottom = "";
+cell.style.borderLeft = "";
+cell.style.borderRight = "";
+
       if(!data) continue;
 
       /* STOCK */
@@ -444,6 +530,54 @@ cell.style.color =
         if(data.border === "black"){
 
           cell.classList.add("structureBlack");
+
+if(data.top){
+
+  cell.style.borderTop =
+    "2px solid black";
+
+}else{
+
+  cell.style.borderTop =
+    "none";
+
+}
+
+if(data.bottom){
+
+  cell.style.borderBottom =
+    "2px solid black";
+
+}else{
+
+  cell.style.borderBottom =
+    "none";
+
+}
+
+if(data.left){
+
+  cell.style.borderLeft =
+    "2px solid black";
+
+}else{
+
+  cell.style.borderLeft =
+    "none";
+
+}
+
+if(data.right){
+
+  cell.style.borderRight =
+    "2px solid black";
+
+}else{
+
+  cell.style.borderRight =
+    "none";
+
+}
 
         }else{
 
@@ -503,8 +637,13 @@ function updateTotals(){
 
     totals[key].unidades += Number(units);
 
-    totals[key].palets +=
-      Number(item.palets || 0);
+    const palets =
+  item.overridePalets ??
+  item.palets ??
+  0;
+
+totals[key].palets +=
+  Number(palets);
 
     totals[key].litros +=
       Number(units) *
@@ -515,7 +654,7 @@ function updateTotals(){
     grandUnits += Number(units);
 
     grandPalets +=
-      Number(item.palets || 0);
+  Number(palets);
 
     grandLiters +=
       Number(units) *
@@ -847,6 +986,16 @@ loadData();
 createPalette();
 createGrid();
 
+/* RESTORE STRUCTURE INPUTS */
+
+document.querySelector(
+  '[data-structure-input="black"]'
+).value = structureNames.black || "";
+
+document.querySelector(
+  '[data-structure-input="red"]'
+).value = structureNames.red || "";
+
 renderGrid();
 updateTotals();
 
@@ -889,6 +1038,11 @@ function saveData(){
     JSON.stringify(paletteData)
   );
 
+  localStorage.setItem(
+  "warehouse_structures",
+  JSON.stringify(structureNames)
+);
+
 }
 
 /* ========================= */
@@ -921,4 +1075,141 @@ function loadData(){
 
   }
 
+  const savedStructures =
+  localStorage.getItem(
+    "warehouse_structures"
+  );
+
+if(savedStructures){
+
+  structureNames =
+    JSON.parse(savedStructures);
+
 }
+
+}
+
+/* ========================= */
+/* EXPORT JSON */
+/* ========================= */
+
+document.getElementById("btnExport")
+.addEventListener("click", ()=>{
+
+  const data = {
+
+    gridData,
+    paletteData,
+    structureNames
+
+  };
+
+  const json =
+    JSON.stringify(data,null,2);
+
+  const blob =
+    new Blob(
+      [json],
+      {
+        type:"application/json"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    "almacen_bodega.json";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+});
+
+/* ========================= */
+/* IMPORT JSON */
+/* ========================= */
+
+document.getElementById("btnImport")
+.addEventListener("click", ()=>{
+
+  document.getElementById("importFile")
+    .click();
+
+});
+
+document.getElementById("importFile")
+.addEventListener("change", e=>{
+
+  const file =
+    e.target.files[0];
+
+  if(!file) return;
+
+  const reader =
+    new FileReader();
+
+  reader.onload = event=>{
+
+    try{
+
+      const data =
+        JSON.parse(
+          event.target.result
+        );
+
+      gridData =
+        data.gridData || {};
+
+      paletteData =
+        data.paletteData || {};
+
+      structureNames =
+        data.structureNames || {
+          black:"",
+          red:""
+        };
+
+      /* RESTORE INPUTS */
+
+      document.querySelector(
+        '[data-structure-input="black"]'
+      ).value =
+        structureNames.black || "";
+
+      document.querySelector(
+        '[data-structure-input="red"]'
+      ).value =
+        structureNames.red || "";
+
+      /* REBUILD */
+
+      palette.innerHTML = "";
+
+      createPalette();
+
+      renderGrid();
+
+      updateTotals();
+
+      saveData();
+
+      alert("Importación completada");
+
+    }catch(err){
+
+      alert("Archivo JSON inválido");
+
+    }
+
+  };
+
+  reader.readAsText(file);
+
+});

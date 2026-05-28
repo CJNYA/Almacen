@@ -58,6 +58,14 @@ function createPalette(){
 
   Object.entries(colorGroups).forEach(([group, colors])=>{
 
+    const groupBox =
+  document.createElement("div");
+
+groupBox.className =
+  `groupBox ${group}Group`;
+
+palette.appendChild(groupBox);
+
     colors.forEach(color=>{
 
       const id = `p_${index++}`;
@@ -70,13 +78,23 @@ if(!paletteData[id]){
     anada:"",
     unidades:0,
     palets:0,
-    capacidad:"0.75"
+    capacidad:"0.75",
+    oferta:"",
+    tipoPalet:"Europeo"
   };
 
 }
 
       const row = document.createElement("div");
       row.className = "paletteRow";
+
+      if(color === "#912a5c"){
+
+  row.classList.add("offerRow");
+
+}
+
+
 
       const square = document.createElement("div");
       square.className = "colorSquare";
@@ -146,7 +164,58 @@ if(!paletteData[id]){
     ${paletteData[id].capacidad=="0.5"?"selected":""}>
     0.5L
   </option>
+
+  </select>
+
+  <select data-field="tipoPalet">
+
+  <option value="Europeo"
+    ${paletteData[id].tipoPalet==="Europeo"?"selected":""}>
+    Europeo
+  </option>
+
+  <option value="Americano"
+    ${paletteData[id].tipoPalet==="Americano"?"selected":""}>
+    Americano
+  </option>
+
 </select>
+
+ ${color === "#912a5c" ? `
+
+<select data-field="oferta">
+
+  <option value="">
+    Ofertas
+  </option>
+
+  <option value="6+6">
+    6+6
+  </option>
+
+  <option value="4+4+4">
+    4+4+4
+  </option>
+
+  <option value="3+3+3+3">
+    3+3+3+3
+  </option>
+
+  <option value="2+2+2">
+    2+2+2
+  </option>
+
+  <option value="maletin mixto">
+    Maletín Mixto
+  </option>
+
+  <option value="estuche mixto">
+    Estuche Mixto
+  </option>
+
+</select>
+
+` : ""}
 `;
 
       inputs.querySelectorAll("input, select")
@@ -167,7 +236,7 @@ if(!paletteData[id]){
       row.appendChild(square);
       row.appendChild(inputs);
 
-      palette.appendChild(row);
+     groupBox.appendChild(row);
 
     });
 
@@ -409,7 +478,9 @@ function applyDragged(r,c){
         anada:p.anada,
         unidades:Number(p.unidades),
         palets:Number(p.palets),
-        capacidad:Number(p.capacidad)
+        capacidad:Number(p.capacidad),
+        tipoPalet:p.tipoPalet,
+        oferta:p.oferta
       };
 
     }
@@ -611,6 +682,115 @@ function updateTotals(){
   .forEach(item=>{
 
     if(item.type !== "stock") return;
+
+    /* ========================= */
+/* OFERTAS */
+/* ========================= */
+
+if(item.oferta){
+
+  const units =
+    item.overrideUnits ||
+    item.unidades;
+
+  const offers = {
+
+    "6+6":[
+      ["24 Mozas",6],
+      ["Madremia",6]
+    ],
+
+    "4+4+4":[
+      ["Abracadabra",4],
+      ["Madremia",4],
+      ["24 Mozas",4]
+    ],
+
+    "3+3+3+3":[
+      ["Abracadabra",3],
+      ["Madremia",3],
+      ["24 Mozas",3],
+      ["Loquillo Tinto",3]
+    ],
+
+    "2+2+2":[
+      ["Abracadabra",2],
+      ["Madremia",2],
+      ["24 Mozas",2]
+    ],
+
+    "maletin mixto":[
+      ["Abracadabra",2],
+      ["Madremia",2],
+      ["24 Mozas",2]
+    ],
+
+    "estuche mixto":[
+      ["Abracadabra",1],
+      ["Madremia",1],
+      ["24 Mozas",1]
+    ]
+
+  };
+
+  const totalParts =
+    offers[item.oferta]
+    .reduce((a,b)=>a+b[1],0);
+
+  offers[item.oferta]
+  .forEach(([marca,mult])=>{
+
+    const key = [
+      marca,
+      item.anada,
+      item.capacidad
+    ].join("|");
+
+    if(!totals[key]){
+
+      totals[key] = {
+
+        marca,
+        anada:item.anada,
+        capacidad:item.capacidad,
+        unidades:0,
+        palets:0,
+        litros:0
+
+      };
+
+    }
+
+    const totalUnits =
+      (
+        Number(units) /
+        totalParts
+      ) * mult;
+
+    totals[key].unidades +=
+      totalUnits;
+
+    totals[key].palets +=
+      Number(item.palets || 0);
+
+    totals[key].litros +=
+      totalUnits *
+      Number(item.capacidad);
+
+    grandUnits += totalUnits;
+
+    grandPalets +=
+      Number(item.palets || 0);
+
+    grandLiters +=
+      totalUnits *
+      Number(item.capacidad);
+
+  });
+
+  return;
+
+}
 
     const units =
       item.overrideUnits ||

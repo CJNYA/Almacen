@@ -5,7 +5,7 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  overflow:hidden;
+  overflow:auto;
 }
 
 /* ========================= */
@@ -13,12 +13,21 @@ body{
 /* ========================= */
 
 #topbar{
-  height:60px;
+
+  min-height:60px;
+
   background:#222;
+
   display:flex;
+
   align-items:center;
+
+  flex-wrap:wrap;
+
   gap:10px;
+
   padding:10px;
+
 }
 
 button{
@@ -245,6 +254,18 @@ button{
 
 @media(max-width:900px){
 
+  #topbar{
+
+  justify-content:center;
+
+}
+
+#topbar button{
+
+  flex:1 1 45%;
+
+}
+
   #mainView{
     flex-direction:column;
   }
@@ -270,4 +291,99 @@ button{
     padding:8px;
   }
 
+}
+
+/* ========================= */
+/* CONTENEDOR DE GRUPOS */
+/* ========================= */
+
+.groupBox{
+
+  border-radius:12px;
+
+  padding:8px;
+
+  margin-bottom:14px;
+
+}
+
+/* ========================= */
+/* AZULES */
+/* ========================= */
+
+.blueGroup{
+  background:#dbeafe;
+  border:3px solid #3b82f6;
+}
+
+/* ========================= */
+/* ROJOS */
+/* ========================= */
+
+.redGroup{
+  background:#fee2e2;
+  border:3px solid #ef4444;
+}
+
+/* ========================= */
+/* NEGROS */
+/* ========================= */
+
+.blackGroup{
+  background:#e5e7eb;
+  border:3px solid #111827;
+}
+
+/* ========================= */
+/* GRISES */
+/* ========================= */
+
+.grayGroup{
+  background:#f3f4f6;
+  border:3px solid #6b7280;
+}
+
+/* ========================= */
+/* AMARILLOS */
+/* ========================= */
+
+.yellowGroup{
+  background:#fef9c3;
+  border:3px solid #eab308;
+}
+
+/* ========================= */
+/* MORADOS */
+/* ========================= */
+
+.purpleGroup{
+  background:#f3e8ff;
+  border:3px solid #9333ea;
+}
+
+/* ========================= */
+/* NARANJAS */
+/* ========================= */
+
+.orangeGroup{
+  background:#ffedd5;
+  border:3px solid #f97316;
+}
+
+/* ========================= */
+/* VERDES */
+/* ========================= */
+
+.greenGroup{
+  background:#dcfce7;
+  border:3px solid #22c55e;
+}
+
+/* ========================= */
+/* ROSA */
+/* ========================= */
+
+.pinkGroup{
+  background:#f3d7e5;
+  border:3px solid #912a5c;
 }

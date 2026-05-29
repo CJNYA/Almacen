@@ -88,14 +88,6 @@ if(!paletteData[id]){
       const row = document.createElement("div");
       row.className = "paletteRow";
 
-      if(color === "#912a5c"){
-
-  row.classList.add("offerRow");
-
-}
-
-
-
       const square = document.createElement("div");
       square.className = "colorSquare";
       square.style.background = color;
@@ -842,26 +834,85 @@ totals[key].palets +=
 
   });
 
-  totalsBody.innerHTML = "";
+totalsBody.innerHTML = "";
 
-  Object.values(totals)
-  .forEach(t=>{
+/* ORDEN DE MARCAS */
 
-    const tr =
-      document.createElement("tr");
+const brandOrder = [
 
-    tr.innerHTML = `
-      <td>${t.marca}</td>
-      <td>${t.anada}</td>
-      <td>${t.capacidad}</td>
-      <td>${t.unidades}</td>
-      <td>${t.palets}</td>
-      <td>${t.litros.toFixed(1)}</td>
-    `;
+  "Platón",
 
-    totalsBody.appendChild(tr);
+  "Abracadabra",
 
-  });
+  "Madremia",
+
+  "24 Mozas",
+
+  "Loquillo Tinto",
+
+  "Encomienda",
+
+  "El Principito",
+
+  "Loquillo Verdejo"
+
+];
+
+/* ORDENAR */
+
+const sortedTotals = Object.values(totals).sort((a,b)=>{
+
+  const brandDiff =
+
+    brandOrder.indexOf(a.marca)
+
+    -
+
+    brandOrder.indexOf(b.marca);
+
+  /* SI LA MARCA ES DISTINTA */
+
+  if(brandDiff !== 0){
+
+    return brandDiff;
+
+  }
+
+  /* SI LA MARCA ES IGUAL */
+
+  return Number(a.anada)
+
+    -
+
+    Number(b.anada);
+
+});
+
+/* PINTAR TABLA */
+
+sortedTotals.forEach(t=>{
+
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+
+    <td>${t.marca}</td>
+
+    <td>${t.anada}</td>
+
+    <td>${t.capacidad}</td>
+
+    <td>${t.unidades}</td>
+
+    <td>${t.palets}</td>
+
+    <td>${t.litros.toFixed(1)}</td>
+
+  `;
+
+  totalsBody.appendChild(tr);
+
+});
 
   /* ========================= */
   /* TOTAL GENERAL */

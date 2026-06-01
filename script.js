@@ -1083,10 +1083,10 @@ document.getElementById("btnPdf")
 /* HOJA 1 -> PALETA */
 /* ========================= */
 
-pdf.setFontSize(16);
+pdf.setFontSize(10);
 
 pdf.text(
-  "Paleta de stock",
+  "PALETA DE STOCK",
   10,
   10
 );
@@ -1098,11 +1098,11 @@ Object.entries(paletteData)
 
   /* NUEVA PAGINA */
 
-  if(y > 180){
+  if(y > 280){
 
     pdf.addPage("a4","portrait");
 
-    y = 20;
+    y = 7;
 
   }
 
@@ -1129,38 +1129,53 @@ Object.entries(paletteData)
 
   pdf.setTextColor(0,0,0);
 
-  pdf.setFontSize(10);
+  pdf.setFontSize(7);
 
   pdf.text(
     `Marca: ${p.marca}`,
-    25,
+    20,
     y
   );
 
   pdf.text(
     `Añada: ${p.anada || "-"}`,
-    80,
+    50,
     y
   );
 
   pdf.text(
     `Unidades: ${p.unidades}`,
-    125,
+    75,
     y
   );
   pdf.text(
   `Palets: ${p.palets}`,
+  100,
+  y
+);
+pdf.text(
+  `Tipo Palets: ${p.tipoPalet || "-"}`,
   125,
-  y + 4
+  y
 );
 
   pdf.text(
     `Capacidad: ${p.capacidad}L`,
-    175,
+    160,
     y
   );
 
-  y += 10;
+  y += 7;
+
+  if(p.oferta){
+
+  pdf.text(
+    `Ofertas: ${p.oferta}`,
+    125,
+    y
+  );
+
+}
 
 });
 

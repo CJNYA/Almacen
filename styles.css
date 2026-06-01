@@ -387,3 +387,15 @@ button{
   background:#f3d7e5;
   border:3px solid #912a5c;
 }
+
+@media print {
+
+  #topbar{
+    display:none !important;
+  }
+
+  body{
+    overflow:visible !important;
+  }
+
+}

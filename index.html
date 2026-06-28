@@ -133,6 +133,7 @@
             <th>Añada</th>
             <th>Capacidad (Litros)</th>
             <th>Total Unidades</th>
+            <th>Estado</th>
             <th>Total Palets</th>
             <th>Total Litros</th>
           </tr>
@@ -146,6 +147,91 @@
     </div>
 
   </section>
+
+  <!-- ========================= -->
+<!-- EDITAR UBICACIÓN -->
+<!-- ========================= -->
+
+<div id="editModal" class="hidden">
+
+  <div id="editBox">
+
+    <h2>EDITAR UBICACIÓN</h2>
+
+    <label>Marca</label>
+    <select id="editMarca">
+      <option>Platón</option>
+      <option>Abracadabra</option>
+      <option>Madremia</option>
+      <option>24 Mozas</option>
+      <option>Loquillo Tinto</option>
+      <option>Loquillo Verdejo</option>
+      <option>El Principito</option>
+      <option>Encomienda</option>
+      <option>Ofertas</option>
+    </select>
+
+    <label>Añada</label>
+    <input id="editAnada" type="number">
+
+    <label>Capacidad</label>
+    <select id="editCapacidad">
+      <option value="1.5">1.5 L</option>
+      <option value="0.75">0.75 L</option>
+      <option value="0.5">0.5 L</option>
+    </select>
+
+    <label>Estado</label>
+    <select id="editEstado">
+      <option>Etiquetado</option>
+      <option>Sin Etiquetar</option>
+    </select>
+
+    <label>Tipo Palet</label>
+    <select id="editTipoPalet">
+      <option>Europeo</option>
+      <option>Americano</option>
+    </select>
+
+    <div id="editOfertaBox">
+
+      <label>Oferta</label>
+
+      <select id="editOferta">
+
+        <option value="">-- Ninguna --</option>
+        <option>6+6</option>
+        <option>4+4+4</option>
+        <option>3+3+3+3</option>
+        <option>2+2+2</option>
+        <option>maletin mixto</option>
+        <option>estuche mixto</option>
+
+      </select>
+
+    </div>
+
+    <label>Unidades</label>
+    <input id="editUnidades" type="number">
+
+    <label>Palets</label>
+    <input id="editPalets" type="number">
+
+    <div id="editButtons">
+
+      <button id="btnCancelEdit">
+        Cancelar
+      </button>
+
+      <button id="btnSaveEdit">
+        Guardar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

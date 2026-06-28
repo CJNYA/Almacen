@@ -33,6 +33,48 @@ const btnTotals = document.getElementById("btnTotals");
 const btnBack = document.getElementById("btnBack");
 
 /* ========================= */
+/* EDITAR UBICACIÓN */
+/* ========================= */
+
+const editModal =
+  document.getElementById("editModal");
+
+const editMarca =
+  document.getElementById("editMarca");
+
+const editAnada =
+  document.getElementById("editAnada");
+
+const editCapacidad =
+  document.getElementById("editCapacidad");
+
+const editEstado =
+  document.getElementById("editEstado");
+
+const editTipoPalet =
+  document.getElementById("editTipoPalet");
+
+const editOferta =
+  document.getElementById("editOferta");
+
+const editOfertaBox =
+  document.getElementById("editOfertaBox");
+
+const editUnidades =
+  document.getElementById("editUnidades");
+
+const editPalets =
+  document.getElementById("editPalets");
+
+const btnSaveEdit =
+  document.getElementById("btnSaveEdit");
+
+const btnCancelEdit =
+  document.getElementById("btnCancelEdit");
+
+let editingCell = null;
+
+/* ========================= */
 /* COLORS */
 /* ========================= */
 
@@ -80,7 +122,8 @@ if(!paletteData[id]){
     palets:0,
     capacidad:"0.75",
     oferta:"",
-    tipoPalet:"Europeo"
+    tipoPalet:"Europeo",
+    estado:"Etiquetado"
   };
 
 }
@@ -173,6 +216,20 @@ if(!paletteData[id]){
 
 </select>
 
+<select data-field="estado">
+
+  <option value="Etiquetado"
+    ${paletteData[id].estado==="Etiquetado"?"selected":""}>
+    Etiquetado
+  </option>
+
+  <option value="Sin Etiquetar"
+    ${paletteData[id].estado==="Sin Etiquetar"?"selected":""}>
+    Sin Etiquetar
+  </option>
+
+</select>
+
  ${color === "#912a5c" ? `
 
 <select data-field="oferta">
@@ -258,9 +315,7 @@ function createGrid(){
 
       });
 
-      /* DOUBLE CLICK */
-
-     cell.addEventListener("dblclick", ()=>{
+      cell.addEventListener("dblclick", ()=>{
 
   const key = `${r}-${c}`;
 
@@ -270,35 +325,43 @@ function createGrid(){
 
   if(data.type !== "stock") return;
 
-  /* UNIDADES */
+  editingCell = data;
 
-  const units = prompt(
-    "Editar unidades",
-    data.overrideUnits || data.unidades
-  );
+  editMarca.value =
+    data.marca;
 
-  if(units === null) return;
+  editAnada.value =
+    data.anada;
 
-  /* PALETS */
+  editCapacidad.value =
+    data.capacidad;
 
-  const palets = prompt(
-    "Editar palets",
-    data.overridePalets || data.palets || 0
-  );
+  editEstado.value =
+    data.estado || "Etiquetado";
 
-  if(palets === null) return;
+  editTipoPalet.value =
+    data.tipoPalet || "Europeo";
 
-  data.overrideUnits =
-    Number(units);
+  editOferta.value =
+    data.oferta || "";
 
-  data.overridePalets =
-    Number(palets);
+  editUnidades.value =
+    data.overrideUnits ?? data.unidades;
 
-  renderGrid();
+  editPalets.value =
+    data.overridePalets ?? data.palets;
 
-  updateTotals();
+  if(editMarca.value === "Ofertas"){
 
-  saveData();
+    editOfertaBox.style.display = "block";
+
+  }else{
+
+    editOfertaBox.style.display = "none";
+
+  }
+
+  editModal.classList.remove("hidden");
 
 });
 
@@ -325,6 +388,70 @@ function createGrid(){
   }
 
 }
+
+/* ========================= */
+/* EDITAR UBICACIÓN */
+/* ========================= */
+
+editMarca.addEventListener("change", ()=>{
+
+  if(editMarca.value === "Ofertas"){
+
+    editOfertaBox.style.display = "block";
+
+  }else{
+
+    editOfertaBox.style.display = "none";
+
+    editOferta.value = "";
+
+  }
+
+});
+
+btnCancelEdit.addEventListener("click", ()=>{
+
+  editModal.classList.add("hidden");
+
+});
+
+btnSaveEdit.addEventListener("click", ()=>{
+
+  if(!editingCell) return;
+
+  editingCell.marca =
+    editMarca.value;
+
+  editingCell.anada =
+    editAnada.value;
+
+  editingCell.capacidad =
+    Number(editCapacidad.value);
+
+  editingCell.estado =
+    editEstado.value;
+
+  editingCell.tipoPalet =
+    editTipoPalet.value;
+
+  editingCell.oferta =
+    editOferta.value;
+
+  editingCell.overrideUnits =
+    Number(editUnidades.value);
+
+  editingCell.overridePalets =
+    Number(editPalets.value);
+
+  editModal.classList.add("hidden");
+
+  renderGrid();
+
+  updateTotals();
+
+  saveData();
+
+});
 
 /* ========================= */
 /* SELECTION */
@@ -472,6 +599,7 @@ function applyDragged(r,c){
         palets:Number(p.palets),
         capacidad:Number(p.capacidad),
         tipoPalet:p.tipoPalet,
+        estado:p.estado,
         oferta:p.oferta
       };
 
@@ -735,7 +863,8 @@ if(item.oferta){
     const key = [
       marca,
       item.anada,
-      item.capacidad
+      item.capacidad,
+      item.estado
     ].join("|");
 
     if(!totals[key]){
@@ -745,6 +874,7 @@ if(item.oferta){
         marca,
         anada:item.anada,
         capacidad:item.capacidad,
+        estado:item.estado,
         unidades:0,
         palets:0,
         litros:0
@@ -791,7 +921,8 @@ if(item.oferta){
     const key = [
       item.marca,
       item.anada,
-      item.capacidad
+      item.capacidad,
+      item.estado
     ].join("|");
 
     if(!totals[key]){
@@ -800,6 +931,7 @@ if(item.oferta){
         marca:item.marca,
         anada:item.anada,
         capacidad:item.capacidad,
+        estado:item.estado,
         unidades:0,
         palets:0,
         litros:0
@@ -904,6 +1036,8 @@ sortedTotals.forEach(t=>{
 
     <td>${t.unidades}</td>
 
+    <td>${t.estado}</td>
+
     <td>${t.palets}</td>
 
     <td>${t.litros.toFixed(1)}</td>
@@ -929,6 +1063,8 @@ sortedTotals.forEach(t=>{
     <td>
       <strong>${grandUnits}</strong>
     </td>
+
+    <td></td>
 
     <td>
       <strong>${grandPalets}</strong>
@@ -1148,20 +1284,27 @@ Object.entries(paletteData)
     75,
     y
   );
+
+  pdf.text(
+  `Estado: ${p.estado || "Etiquetado"}`,
+  100,
+  y
+);
+
   pdf.text(
   `Palets: ${p.palets}`,
-  100,
+  130,
   y
 );
 pdf.text(
   `Tipo Palets: ${p.tipoPalet || "-"}`,
-  125,
+  145,
   y
 );
 
   pdf.text(
     `Capacidad: ${p.capacidad}L`,
-    160,
+    180,
     y
   );
 

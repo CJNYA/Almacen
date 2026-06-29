@@ -119,11 +119,12 @@ if(!paletteData[id]){
     marca:"Platón",
     anada:"",
     unidades:0,
+    estado:"Etiquetado",
     palets:0,
     capacidad:"0.75",
     oferta:"",
     tipoPalet:"Europeo",
-    estado:"Etiquetado"
+
   };
 
 }
@@ -1457,12 +1458,32 @@ function loadData(){
 
   }
 
+  Object.values(gridData).forEach(item=>{
+
+  if(item.type === "stock" && item.estado === undefined){
+
+    item.estado = "Etiquetado";
+
+  }
+
+});
+
   if(savedPalette){
 
     paletteData =
       JSON.parse(savedPalette);
 
   }
+
+  Object.values(paletteData).forEach(item=>{
+
+  if(item.estado === undefined){
+
+    item.estado = "Etiquetado";
+
+  }
+
+});
 
   const savedStructures =
   localStorage.getItem(
@@ -1475,6 +1496,7 @@ if(savedStructures){
     JSON.parse(savedStructures);
 
 }
+saveData();
 
 }
 

@@ -424,7 +424,7 @@ button{
   width:420px;
   max-width:95vw;
 
-  background:rgb(168, 163, 163);
+  background:rgb(230, 218, 174);
 
   border-radius:12px;
 
@@ -487,4 +487,20 @@ button{
   background:#117A65;
   color:white;
 
+}
+
+/* Campo solo lectura */
+
+select:disabled{
+
+  background:#ffffff;
+  color:#000000;
+  font-weight:bold;
+  opacity:1;
+
+}
+
+#btnUndo{
+  background:#7D3C98;
+  color:white;
 }

@@ -8,6 +8,8 @@ const COLS = 36;
 let gridData = {};
 let paletteData = {};
 
+let deletedBackup = null;
+
 let selectedCells = [];
 let firstCell = null;
 
@@ -1101,6 +1103,9 @@ function getCell(r,c){
 document.getElementById("btnDelete")
 .addEventListener("click", ()=>{
 
+  deletedBackup =
+    JSON.parse(JSON.stringify(gridData));
+
   selectedCells.forEach(pos=>{
 
     delete gridData[
@@ -1122,12 +1127,39 @@ document.getElementById("btnDelete")
 document.getElementById("btnClear")
 .addEventListener("click", ()=>{
 
+  deletedBackup =
+    JSON.parse(JSON.stringify(gridData));
+
   gridData = {};
 
   clearSelection();
 
   renderGrid();
   updateTotals();
+  saveData();
+
+});
+
+document.getElementById("btnUndo")
+.addEventListener("click", ()=>{
+
+  if(!deletedBackup){
+
+    alert("No hay ningún borrado para recuperar.");
+
+    return;
+
+  }
+
+  gridData =
+    JSON.parse(JSON.stringify(deletedBackup));
+
+  deletedBackup = null;
+
+  renderGrid();
+
+  updateTotals();
+
   saveData();
 
 });
